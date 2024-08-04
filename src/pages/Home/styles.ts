@@ -61,6 +61,12 @@ export const Items = styled.div`
 
 export const CoffeeList = styled.div`
   padding: 1rem 10rem;
+ 
+  > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap:2.5rem 2rem;
+  }
 
   h1 {
     color: ${(props) => props.theme["base-subtitle"]};

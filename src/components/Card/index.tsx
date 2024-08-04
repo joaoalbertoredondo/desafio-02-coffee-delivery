@@ -1,29 +1,45 @@
-import { CardContainer, Control, Order, Price, Tag } from "./styles";
-import image from "../../assets/coffees/americano.png";
+import { CardContainer, Control, Order, Price, Tags } from "./styles";
 import QuantityInput from "../Form/QuantityInput";
-import { ShoppingCart } from "@phosphor-icons/react";
+import { ShoppingCartSimple } from "@phosphor-icons/react";
 
-function Card() {
+interface Props {
+  coffee: CoffeeType;
+}
+
+export type CoffeeType = {
+  id: string;
+  title: string;
+  description: string;
+  tags: string[];
+  price: number;
+  image: string;
+};
+
+function Card({ coffee }: Props) {
   return (
     <CardContainer>
-      <img src={image} alt="" />
+      <img src={coffee.image} alt="" />
 
-      <Tag>Tradicional</Tag>
+      <Tags>
+        {coffee.tags.map((tag) => {
+          return <span key={tag}>{tag}</span>;
+        })}
+      </Tags>
 
-      <h1>Expresso Tradicional</h1>
-      <p>O tradicional café feito com água quente e grãos moídos</p>
+      <h1>{coffee.title}</h1>
+      <p>{coffee.description}</p>
 
       <Control>
         <Price>
           <span>R$</span>
-          <span>9,90</span>
+          <span>{coffee.price.toFixed(2).replace(".", ",")}</span>
         </Price>
 
         <Order>
           <QuantityInput />
 
           <button>
-            <ShoppingCart size={22} weight="fill" />
+            <ShoppingCartSimple size={22} weight="fill" />
           </button>
         </Order>
       </Control>

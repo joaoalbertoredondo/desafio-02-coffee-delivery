@@ -33,17 +33,21 @@ export const CardContainer = styled.div`
   }
 `;
 
-export const Tag = styled.span`
+export const Tags = styled.span`
   margin-top: 0.75rem;
+  display: flex;
+  gap: 0.25rem;
 
-  background: ${(props) => props.theme["yellow-light"]};
-  color: ${(props) => props.theme["yellow-dark"]};
-  border-radius: 100px;
-  padding: 0.25rem 0.5rem;
+  > span {
+    background: ${(props) => props.theme["yellow-light"]};
+    color: ${(props) => props.theme["yellow-dark"]};
+    border-radius: 100px;
+    padding: 0.25rem 0.5rem;
 
-  text-transform: uppercase;
+    text-transform: uppercase;
 
-  ${fonts.tag}
+    ${fonts.tag}
+  }
 `;
 
 export const Control = styled.div`
@@ -70,7 +74,7 @@ export const Price = styled.div`
 
 export const Order = styled.div`
   display: flex;
-  align-items: center;
+  justify-content: center;
   gap: 0.5rem;
 
   > button {

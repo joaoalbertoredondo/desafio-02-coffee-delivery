@@ -2,10 +2,24 @@ import { CoffeeList, Heading, Hero, HomeContainer, Items } from "./styles";
 import { Coffee, Package, ShoppingCart, Timer } from "@phosphor-icons/react";
 import coffee from "../../assets/Coffee.png";
 import { useTheme } from "styled-components";
-import Card from "../../components/Card";
+import Card, { CoffeeType } from "../../components/Card";
+import { useEffect, useState } from "react";
 
 function Home() {
   const theme = useTheme();
+
+  const [coffees, setCoffees] = useState<CoffeeType[]>([]);
+
+  async function loadCoffees() {
+    const response = await fetch("http://localhost:3000/coffees");
+    const coffees = await response.json();
+
+    setCoffees(coffees);
+  }
+
+  useEffect(() => {
+    loadCoffees();
+  }, []);
 
   return (
     <HomeContainer>
@@ -64,7 +78,12 @@ function Home() {
 
       <CoffeeList>
         <h1>Nossos Cafés</h1>
-        <Card />
+        
+        <div>
+          {coffees.map((coffee: CoffeeType) => {
+            return <Card coffee={coffee} key={coffee.id} />;
+          })}
+        </div>
       </CoffeeList>
     </HomeContainer>
   );

@@ -1,5 +1,5 @@
 import { Cart, HeaderContainer, Location } from "./styles";
-import { MapPin, ShoppingCart } from "@phosphor-icons/react";
+import { MapPin, ShoppingCartSimple } from "@phosphor-icons/react";
 import logo from "../../assets/Logo.png";
 import { Link } from "react-router-dom";
 
@@ -17,7 +17,7 @@ function Header() {
         </Location>
         <Link to="/cart">
           <Cart>
-            <ShoppingCart size={22} weight="fill" />
+            <ShoppingCartSimple size={22} weight="fill" />
           </Cart>
         </Link>
       </aside>
