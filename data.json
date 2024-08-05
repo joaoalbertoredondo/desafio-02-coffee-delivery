@@ -112,5 +112,6 @@
       "price": 12.70,
       "image": "/src/assets/coffees/irish.png"
     }
-  ]
+  ],
+  "cart": []
 }
