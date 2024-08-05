@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { fonts } from "../../styles/fonts";
 
 export const HeaderContainer = styled.header`
   width: 100%;
@@ -35,11 +36,31 @@ export const Cart = styled.div`
   display: flex;
   align-items: center;
   padding: 0.5rem;
-  
+
   background-color: ${(props) => props.theme["yellow-light"]};
   border-radius: 6px;
 
   svg {
     color: ${(props) => props.theme["yellow-dark"]};
   }
+`;
+
+export const ItemsQuantity = styled.div`
+  width: 20px;
+  height: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: ${(props) => props.theme["yellow-dark"]};
+  color: ${(props) => props.theme["base-background"]};
+  border-radius: 100%;
+  padding: 0.25rem;
+
+  ${fonts.textS}
+  font-weight: bold;
+
+  margin-left: -20px;
+  margin-top: -29px;
 `;

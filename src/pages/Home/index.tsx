@@ -1,5 +1,5 @@
 import { CoffeeList, Heading, Hero, HomeContainer, Items } from "./styles";
-import { Coffee, Package, ShoppingCart, Timer } from "@phosphor-icons/react";
+import { Coffee, Package, ShoppingCartSimple, Timer } from "@phosphor-icons/react";
 import coffee from "../../assets/Coffee.png";
 import { useTheme } from "styled-components";
 import Card, { CoffeeType } from "../../components/Card";
@@ -33,7 +33,7 @@ function Home() {
 
           <Items>
             <div>
-              <ShoppingCart
+              <ShoppingCartSimple
                 size={32}
                 weight="fill"
                 color={theme["base-background"]}

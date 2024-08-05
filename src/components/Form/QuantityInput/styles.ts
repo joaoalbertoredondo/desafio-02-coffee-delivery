@@ -15,5 +15,9 @@ export const QuantityInputContainer = styled.div`
 
     background-color: transparent;
     color: ${(props) => props.theme.purple};
+
+    &:hover {
+      color: ${(props) => props.theme["purple-dark"]};
+    }
   }
 `;

@@ -182,6 +182,15 @@ export const SelectedCoffees = styled.div`
     padding: 0.75rem;
 
     text-transform: uppercase;
+
+    &:hover {
+      background: ${(props) => props.theme["yellow-dark"]};
+      transition: background-color 0.2s;
+    }
+
+    &:disabled {
+      cursor: not-allowed;
+    }
   }
 `;
 
@@ -228,6 +237,11 @@ export const Details = styled.div`
         line-height: 0;
 
         ${fonts.buttonM}
+
+        &:hover {
+          background: ${(props) => props.theme["base-hover"]};
+          transition: background-color 0.2s;
+        }
 
         svg {
           color: ${(props) => props.theme["purple"]};

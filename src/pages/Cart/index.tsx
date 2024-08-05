@@ -28,11 +28,39 @@ import { useState } from "react";
 import imageTest from "../../assets/coffees/arab.png";
 import QuantityInput from "../../components/Form/QuantityInput";
 import { priceFormatter } from "../../utils/formatter";
+import { useForm } from "react-hook-form";
 
 function Cart() {
+  const { register, handleSubmit, watch } = useForm();
+
   const shippingPrice = 3.5;
 
   const [selectedPaymentOption, setSelectedPaymentOption] = useState("");
+
+  function handleOrderCheckout(data: any) {
+    const consolidatedData = {
+      ...data,
+      selectedPaymentOption,
+    };
+
+    console.log(consolidatedData);
+  }
+
+  const watchUf = watch("uf");
+  const watchCep = watch("cep");
+  const watchRua = watch("rua");
+  const watchNum = watch("num");
+  const watchComp = watch("comp");
+  const watchBairro = watch("bairro");
+
+  const isSubmitDisabled =
+    !watchUf ||
+    !watchCep ||
+    !watchRua ||
+    !watchNum ||
+    !watchComp ||
+    !watchBairro ||
+    !selectedPaymentOption;
 
   function handlePaymentOption(value: string) {
     setSelectedPaymentOption(value);
@@ -40,10 +68,10 @@ function Cart() {
 
   return (
     <CartContainer>
-      <form id="order">
-        <Info>
-          <h2>Complete seu pedido</h2>
+      <Info>
+        <h2>Complete seu pedido</h2>
 
+        <form id="order" onSubmit={handleSubmit(handleOrderCheckout)}>
           <Address>
             <AddressHeader>
               <MapPinLine size={22} />
@@ -54,64 +82,95 @@ function Cart() {
             </AddressHeader>
 
             <AddressForm>
-              <input type="number" placeholder="CEP" id="sm" />
-              <input type="text" placeholder="Rua" />
+              <input
+                type="number"
+                placeholder="CEP"
+                id="sm"
+                {...register("cep", { valueAsNumber: true })}
+              />
+
+              <input type="text" placeholder="Rua" {...register("rua")} />
+
               <div>
-                <input type="number" placeholder="Número" id="sm" />
-                <input type="text" placeholder="Complemento" id="cp" />
+                <input
+                  type="number"
+                  placeholder="Número"
+                  id="sm"
+                  {...register("num", { valueAsNumber: true })}
+                />
+
+                <input
+                  type="text"
+                  placeholder="Complemento"
+                  id="cp"
+                  {...register("comp")}
+                />
               </div>
+
               <div>
-                <input type="text" placeholder="Bairro" id="sm" />
-                <input type="text" placeholder="Cidade" id="ct" />
-                <input type="text" placeholder="UF" id="uf" />
+                <input
+                  type="text"
+                  placeholder="Bairro"
+                  id="sm"
+                  {...register("bairro")}
+                />
+
+                <input
+                  type="text"
+                  placeholder="Cidade"
+                  id="ct"
+                  {...register("cidade")}
+                />
+
+                <input
+                  type="text"
+                  placeholder="UF"
+                  id="uf"
+                  {...register("uf")}
+                />
               </div>
             </AddressForm>
           </Address>
+        </form>
 
-          <Payment>
-            <PaymentHeader>
-              <CurrencyDollar size={22} />
-              <div>
-                <h3>Pagamento</h3>
-                <p>
-                  O pagamento é feito na entrega. Escolha a forma que deseja
-                  pagar
-                </p>
-              </div>
-            </PaymentHeader>
+        <Payment>
+          <PaymentHeader>
+            <CurrencyDollar size={22} />
+            <div>
+              <h3>Pagamento</h3>
+              <p>
+                O pagamento é feito na entrega. Escolha a forma que deseja pagar
+              </p>
+            </div>
+          </PaymentHeader>
 
-            <PaymentOptions>
-              <button
-                onClick={() => handlePaymentOption("credito")}
-                className={
-                  selectedPaymentOption === "credito" ? "selected" : ""
-                }
-              >
-                <CreditCard size={16} />
-                <span>cartão de crédito</span>
-              </button>
+          <PaymentOptions>
+            <button
+              onClick={() => handlePaymentOption("credito")}
+              className={selectedPaymentOption === "credito" ? "selected" : ""}
+            >
+              <CreditCard size={16} />
+              <span>cartão de crédito</span>
+            </button>
 
-              <button
-                onClick={() => handlePaymentOption("debito")}
-                className={selectedPaymentOption === "debito" ? "selected" : ""}
-              >
-                <Bank size={16} />
-                <span>cartão de débito</span>
-              </button>
+            <button
+              onClick={() => handlePaymentOption("debito")}
+              className={selectedPaymentOption === "debito" ? "selected" : ""}
+            >
+              <Bank size={16} />
+              <span>cartão de débito</span>
+            </button>
 
-              <button
-                onClick={() => handlePaymentOption("dinheiro")}
-                className={
-                  selectedPaymentOption === "dinheiro" ? "selected" : ""
-                }
-              >
-                <Money size={16} />
-                <span>dinheiro</span>
-              </button>
-            </PaymentOptions>
-          </Payment>
-        </Info>
-      </form>
+            <button
+              onClick={() => handlePaymentOption("dinheiro")}
+              className={selectedPaymentOption === "dinheiro" ? "selected" : ""}
+            >
+              <Money size={16} />
+              <span>dinheiro</span>
+            </button>
+          </PaymentOptions>
+        </Payment>
+      </Info>
 
       <Info>
         <h2>Cafés selecionados</h2>
@@ -156,7 +215,7 @@ function Cart() {
             </section>
           </CartTotal>
 
-          <button type="submit" form="order">
+          <button type="submit" form="order" disabled={isSubmitDisabled}>
             confirmar pedido
           </button>
         </SelectedCoffees>
