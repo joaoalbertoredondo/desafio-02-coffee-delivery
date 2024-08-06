@@ -13,7 +13,7 @@ import {
   AddressHeader,
   CartContainer,
   CartTotal,
-  CoffeeCard,
+  Coffee,
   Details,
   Info,
   Payment,
@@ -24,20 +24,64 @@ import {
   Separator,
 } from "./styles";
 
-import { useState } from "react";
-import imageTest from "../../assets/coffees/arab.png";
 import QuantityInput from "../../components/Form/QuantityInput";
 import { priceFormatter } from "../../utils/formatter";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { CoffeeType } from "../../components/Card";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import * as zod from "zod";
+
+type newOrderFormData = zod.infer<typeof newOrderFormValidationSchema>;
+
+const newOrderFormValidationSchema = zod.object({
+  comp: zod.string().optional(),
+  rua: zod.string().min(1, "Informe a Rua"),
+  num: zod.number().min(1, "Informe o Número"),
+  cidade: zod.string().min(1, "Informe a Cidade"),
+  bairro: zod.string().min(1, "Informe o Bairro"),
+  cep: zod.string().min(10, "CEP invalido").max(10, "CEP invalido"),
+  uf: zod
+    .string()
+    .min(1, "Informe o Estado")
+    .max(2, "O Estado deve conter 2 caracteres"),
+});
 
 function Cart() {
-  const { register, handleSubmit, watch } = useForm();
+  const { register, handleSubmit, watch } = useForm<newOrderFormData>({
+    resolver: zodResolver(newOrderFormValidationSchema),
+  });
 
-  const shippingPrice = 3.5;
+  const [coffeesInCart, setCoffeesInCart] = useState<CoffeeType[]>([]);
 
   const [selectedPaymentOption, setSelectedPaymentOption] = useState("");
 
-  function handleOrderCheckout(data: any) {
+  const [totalItemsPrice, setTotalItemsPrice] = useState(0)
+
+
+  const watchUf = watch("uf");
+  const watchCep = watch("cep");
+  const watchRua = watch("rua");
+  const watchNum = watch("num");
+  const watchBairro = watch("bairro");
+  const watchCiadde = watch("cidade");
+
+  const isSubmitDisabled =
+    !watchUf ||
+    !watchCep ||
+    !watchRua ||
+    !watchNum ||
+    !watchBairro ||
+    !watchCiadde ||
+    !selectedPaymentOption;
+
+  const shippingPrice = 3.5;
+
+  function handlePaymentOption(value: string) {
+    setSelectedPaymentOption(value);
+  }
+
+  function handleOrderCheckout(data: newOrderFormData) {
     const consolidatedData = {
       ...data,
       selectedPaymentOption,
@@ -46,24 +90,41 @@ function Cart() {
     console.log(consolidatedData);
   }
 
-  const watchUf = watch("uf");
-  const watchCep = watch("cep");
-  const watchRua = watch("rua");
-  const watchNum = watch("num");
-  const watchComp = watch("comp");
-  const watchBairro = watch("bairro");
+  useEffect(() => {
+    loadCoffeesInCart();
+  }, []);
 
-  const isSubmitDisabled =
-    !watchUf ||
-    !watchCep ||
-    !watchRua ||
-    !watchNum ||
-    !watchComp ||
-    !watchBairro ||
-    !selectedPaymentOption;
+  async function loadCoffeesInCart() {
+    const response = await fetch("http://localhost:3000/cart");
+    const coffeesInCartFromJson = await response.json();
 
-  function handlePaymentOption(value: string) {
-    setSelectedPaymentOption(value);
+    setCoffeesInCart(coffeesInCartFromJson);
+
+    let total = 0
+    
+    coffeesInCartFromJson.map((item: CoffeeType) => {
+      total = total + item.price * (item.quantity || 1)
+
+      setTotalItemsPrice(total)
+    })
+  }
+
+  async function editCoffeeQuantity(newQuantity: number, id?: string) {
+    await fetch(`http://localhost:3000/cart/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({
+        quantity: newQuantity,
+      }),
+    });
+    await loadCoffeesInCart();
+  }
+
+  async function removeCoffee(id: string) {
+    await fetch(`http://localhost:3000/cart/${id}`, {
+      method: "DELETE",
+    });
+
+    await loadCoffeesInCart();
   }
 
   return (
@@ -83,10 +144,10 @@ function Cart() {
 
             <AddressForm>
               <input
-                type="number"
+                type="text"
                 placeholder="CEP"
                 id="sm"
-                {...register("cep", { valueAsNumber: true })}
+                {...register("cep")}
               />
 
               <input type="text" placeholder="Rua" {...register("rua")} />
@@ -99,12 +160,7 @@ function Cart() {
                   {...register("num", { valueAsNumber: true })}
                 />
 
-                <input
-                  type="text"
-                  placeholder="Complemento"
-                  id="cp"
-                  {...register("comp")}
-                />
+                <input type="text" placeholder="Complemento" id="cp" />
               </div>
 
               <div>
@@ -176,32 +232,43 @@ function Cart() {
         <h2>Cafés selecionados</h2>
 
         <SelectedCoffees>
-          <CoffeeCard>
-            <img src={imageTest} alt="" />
+          {coffeesInCart.map((coffee) => {
+            return (
+              <div key={coffee.id}>
+                <Coffee>
+                  <img src={coffee.image} alt="" />
+                  <Details>
+                    <section>
+                      <span>{coffee.title}</span>
+                      <div>
+                        <QuantityInput
+                          quantity={coffee.quantity || 1}
+                          id={coffee.id}
+                          setQuantity={editCoffeeQuantity}
+                        />
+                        <button onClick={() => removeCoffee(coffee.id)}>
+                          <Trash size={16} />
+                          Remover
+                        </button>
+                      </div>
+                    </section>
+                    <Price>
+                      {priceFormatter.format(
+                        coffee.price * (coffee.quantity || 1)
+                      )}
+                    </Price>
+                  </Details>
+                </Coffee>
 
-            <Details>
-              <section>
-                <span>Expresso Tradicional</span>
-
-                <div>
-                  <QuantityInput />
-                  <button>
-                    <Trash size={16} />
-                    Remover
-                  </button>
-                </div>
-              </section>
-
-              <Price>R$9,90</Price>
-            </Details>
-          </CoffeeCard>
-
-          <Separator />
+                <Separator />
+              </div>
+            );
+          })}
 
           <CartTotal>
             <div>
               <span>Total de itens</span>
-              <span>R$ 9,90</span>
+              <span>{priceFormatter.format(totalItemsPrice)}</span>
             </div>
 
             <div>
@@ -211,7 +278,7 @@ function Cart() {
 
             <section>
               <span>Total</span>
-              <span>R$ 13,40</span>
+              <span>{priceFormatter.format(totalItemsPrice + shippingPrice)}</span>
             </section>
           </CartTotal>
 

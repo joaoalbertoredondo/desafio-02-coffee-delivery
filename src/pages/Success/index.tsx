@@ -3,7 +3,25 @@ import { Box, BoxHeader, Details, SuccessContainer } from "./styles";
 import deliveryImg from "../../assets/deliver.png";
 import { useTheme } from "styled-components";
 
-function Success() {
+interface ConsolidatedData {
+  uf: string;
+  rua: string;
+  num: number;
+  bairro: string;
+  cidade: string;
+  comp?: string | undefined;
+  selectedPaymentOption: string;
+}
+
+function Success({
+  uf,
+  rua,
+  num,
+  comp,
+  cidade,
+  bairro,
+  selectedPaymentOption,
+}: ConsolidatedData) {
   const theme = useTheme();
 
   return (
@@ -26,9 +44,16 @@ function Success() {
                 />
                 <div>
                   <span>
-                    Entrega em <strong>Rua João Daniel Martinelli, 102</strong>
+                    Entrega em{" "}
+                    <strong>
+                      {rua || "Rua João Daniel Martinelli"}, {num || "102"}
+                      {comp}
+                    </strong>
                   </span>
-                  <span>Farrapos - Porto Alegre, RS</span>
+                  <span>
+                    {bairro || "Farrapos"} - {cidade || "Porto Alegre"},{" "}
+                    {uf || "RS"}
+                  </span>
                 </div>
               </div>
 
@@ -54,7 +79,9 @@ function Success() {
                 />
                 <div>
                   <span>Pagamento na entrega</span>
-                  <strong>Cartão de crédito</strong>
+                  <strong>
+                    {selectedPaymentOption || "Cartão de crédito"}
+                  </strong>
                 </div>
               </div>
             </div>

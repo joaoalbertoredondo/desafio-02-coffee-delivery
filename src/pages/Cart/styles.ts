@@ -153,6 +153,7 @@ export const PaymentOptions = styled.div`
     &:hover {
       background: ${(props) => props.theme["base-hover"]};
       color: ${(props) => props.theme["base-subtitle"]};
+      transition: background-color 0.2s;
     }
   }
 
@@ -194,7 +195,7 @@ export const SelectedCoffees = styled.div`
   }
 `;
 
-export const CoffeeCard = styled.div`
+export const Coffee = styled.div`
   display: flex;
   align-items: center;
 
