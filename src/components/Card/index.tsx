@@ -1,7 +1,8 @@
 import { CardContainer, Control, Order, Price, Tags } from "./styles";
 import { ShoppingCartSimple } from "@phosphor-icons/react";
 import QuantityInput from "../Form/QuantityInput";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { CartContext } from "../../contexts/CartContext";
 
 interface Props {
   coffee: CoffeeType;
@@ -18,6 +19,8 @@ export type CoffeeType = {
 };
 
 function Card({ coffee }: Props) {
+  const { refreshCart } = useContext(CartContext);
+
   const [quantity, setQuantity] = useState(1);
 
   async function postCoffee(body: CoffeeType) {
@@ -40,6 +43,7 @@ function Card({ coffee }: Props) {
           }),
         });
       }
+      refreshCart();
     }
   }
 

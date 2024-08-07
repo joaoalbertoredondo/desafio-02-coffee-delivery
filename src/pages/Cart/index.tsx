@@ -28,14 +28,15 @@ import QuantityInput from "../../components/Form/QuantityInput";
 import { priceFormatter } from "../../utils/formatter";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CoffeeType } from "../../components/Card";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
 import { useNavigate } from "react-router-dom";
+import { CartContext } from "../../contexts/CartContext";
 
 export type newOrderFormData = zod.infer<typeof newOrderFormValidationSchema>;
 
-type newOrder = {
+export type newOrder = {
   address: newOrderFormData & { selectedPaymentOption: string };
   items: CoffeeType[];
 };
@@ -132,6 +133,8 @@ function Cart() {
     loadCoffeesInCart();
   }, []);
 
+  const { refreshCart } = useContext(CartContext);
+
   async function loadCoffeesInCart() {
     const response = await fetch("http://localhost:3000/cart");
     const coffeesInCartFromJson = await response.json();
@@ -145,6 +148,8 @@ function Cart() {
 
       setTotalItemsPrice(total);
     });
+
+    refreshCart();
   }
 
   async function editCoffeeQuantity(newQuantity: number, id?: string) {

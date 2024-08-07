@@ -6,6 +6,7 @@ export const HomeContainer = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin-bottom: 10rem;
 `;
 
 export const Hero = styled.div`

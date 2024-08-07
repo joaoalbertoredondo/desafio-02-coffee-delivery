@@ -1,21 +1,25 @@
 import { Cart, HeaderContainer, ItemsQuantity, Location } from "./styles";
 import { MapPin, ShoppingCartSimple } from "@phosphor-icons/react";
+import { useContext, useEffect, useState } from "react";
 import logo from "../../assets/Logo.png";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { CartContext } from "../../contexts/CartContext";
 
 function Header() {
   const [numOfItems, setNumOfItems] = useState(0);
-  useEffect(() => {
-    loadCoffeesInCart();
-  }, []);
 
-  async function loadCoffeesInCart() {
-    const response = await fetch("http://localhost:3000/cart");
-    const coffeesInCartFromJson = await response.json();
+  // useEffect(() => {
+  //   loadCoffeesInCart();
+  // }, []);
 
-    setNumOfItems(coffeesInCartFromJson.length);
-  }
+  // async function loadCoffeesInCart() {
+  //   const response = await fetch("http://localhost:3000/cart");
+  //   const coffeesInCartFromJson = await response.json();
+
+  //   setNumOfItems(coffeesInCartFromJson.length);
+  // }
+
+  const { cart } = useContext(CartContext);
 
   return (
     <HeaderContainer>
@@ -35,7 +39,7 @@ function Header() {
           </Cart>
         </Link>
 
-        <ItemsQuantity>{numOfItems}</ItemsQuantity>
+        <ItemsQuantity>{cart.length}</ItemsQuantity>
       </aside>
     </HeaderContainer>
   );
