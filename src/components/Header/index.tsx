@@ -2,19 +2,20 @@ import { Cart, HeaderContainer, ItemsQuantity, Location } from "./styles";
 import { MapPin, ShoppingCartSimple } from "@phosphor-icons/react";
 import logo from "../../assets/Logo.png";
 import { Link } from "react-router-dom";
-// import { CoffeeType } from "../Card";
+import { useEffect, useState } from "react";
 
 function Header() {
-  // async function loadCoffeesInCart() {
-  //   const response = await fetch("http://localhost:3000/cart");
-  //   const coffeesInCartFromJson = await response.json();
+  const [numOfItems, setNumOfItems] = useState(0);
+  useEffect(() => {
+    loadCoffeesInCart();
+  }, []);
 
-  //   const quantityInCart = coffeesInCartFromJson.map((item: CoffeeType) => {
-  //     item.description;
-  //   });
+  async function loadCoffeesInCart() {
+    const response = await fetch("http://localhost:3000/cart");
+    const coffeesInCartFromJson = await response.json();
 
-  //   console.log(quantityInCart);
-  // }
+    setNumOfItems(coffeesInCartFromJson.length);
+  }
 
   return (
     <HeaderContainer>
@@ -34,7 +35,7 @@ function Header() {
           </Cart>
         </Link>
 
-        <ItemsQuantity>3</ItemsQuantity>
+        <ItemsQuantity>{numOfItems}</ItemsQuantity>
       </aside>
     </HeaderContainer>
   );

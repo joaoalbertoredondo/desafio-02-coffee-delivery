@@ -31,8 +31,14 @@ import { CoffeeType } from "../../components/Card";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as zod from "zod";
+import { useNavigate } from "react-router-dom";
 
-type newOrderFormData = zod.infer<typeof newOrderFormValidationSchema>;
+export type newOrderFormData = zod.infer<typeof newOrderFormValidationSchema>;
+
+type newOrder = {
+  address: newOrderFormData & { selectedPaymentOption: string };
+  items: CoffeeType[];
+};
 
 const newOrderFormValidationSchema = zod.object({
   comp: zod.string().optional(),
@@ -56,8 +62,7 @@ function Cart() {
 
   const [selectedPaymentOption, setSelectedPaymentOption] = useState("");
 
-  const [totalItemsPrice, setTotalItemsPrice] = useState(0)
-
+  const [totalItemsPrice, setTotalItemsPrice] = useState(0);
 
   const watchUf = watch("uf");
   const watchCep = watch("cep");
@@ -81,13 +86,46 @@ function Cart() {
     setSelectedPaymentOption(value);
   }
 
-  function handleOrderCheckout(data: newOrderFormData) {
+  let navigate = useNavigate();
+
+  async function handleOrderCheckout(data: newOrderFormData) {
     const consolidatedData = {
       ...data,
       selectedPaymentOption,
     };
 
-    console.log(consolidatedData);
+    const order: newOrder = {
+      address: consolidatedData,
+      items: coffeesInCart,
+    };
+
+    async function postNewOrder(body: newOrder) {
+      return fetch("http://localhost:3000/orders", {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+    }
+
+    async function cleanCart(id: string) {
+      await fetch(`http://localhost:3000/cart/${id}`, {
+        method: "DELETE",
+      });
+    }
+
+    const orderResponse = await postNewOrder(order);
+
+    const jsonOrder = await orderResponse.json();
+
+    for (const coffee of coffeesInCart) {
+      await cleanCart(coffee.id);
+    }
+    console.log(coffeesInCart);
+
+    await loadCoffeesInCart();
+
+    let path = `/success?id=${jsonOrder.id}`;
+
+    navigate(path);
   }
 
   useEffect(() => {
@@ -100,13 +138,13 @@ function Cart() {
 
     setCoffeesInCart(coffeesInCartFromJson);
 
-    let total = 0
-    
-    coffeesInCartFromJson.map((item: CoffeeType) => {
-      total = total + item.price * (item.quantity || 1)
+    let total = 0;
 
-      setTotalItemsPrice(total)
-    })
+    coffeesInCartFromJson.map((item: CoffeeType) => {
+      total = total + item.price * (item.quantity || 1);
+
+      setTotalItemsPrice(total);
+    });
   }
 
   async function editCoffeeQuantity(newQuantity: number, id?: string) {
@@ -278,7 +316,9 @@ function Cart() {
 
             <section>
               <span>Total</span>
-              <span>{priceFormatter.format(totalItemsPrice + shippingPrice)}</span>
+              <span>
+                {priceFormatter.format(totalItemsPrice + shippingPrice)}
+              </span>
             </section>
           </CartTotal>
 

@@ -2,27 +2,40 @@ import { CurrencyDollar, MapPin, Timer } from "@phosphor-icons/react";
 import { Box, BoxHeader, Details, SuccessContainer } from "./styles";
 import deliveryImg from "../../assets/deliver.png";
 import { useTheme } from "styled-components";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import { newOrderFormData } from "../Cart";
 
-interface ConsolidatedData {
-  uf: string;
-  rua: string;
-  num: number;
-  bairro: string;
-  cidade: string;
-  comp?: string | undefined;
-  selectedPaymentOption: string;
-}
-
-function Success({
-  uf,
-  rua,
-  num,
-  comp,
-  cidade,
-  bairro,
-  selectedPaymentOption,
-}: ConsolidatedData) {
+function Success() {
   const theme = useTheme();
+
+  const [searchParams, _] = useSearchParams();
+  const [address, setAddress] = useState<
+    newOrderFormData & { selectedPaymentOption: string }
+  >();
+  const id = searchParams.get("id");
+
+  async function loadAddress() {
+    const res = await fetch(`http://localhost:3000/orders/${id}`);
+
+    const dataJson = await res.json();
+
+    setAddress(dataJson.address);
+  }
+
+  useEffect(() => {
+    loadAddress();
+  }, []);
+
+  function paymentText(type: string) {
+    if (type === "credito") {
+      return "Cartão de Crédito";
+    } else if (type === "debito") {
+      return "Cartão de Débito";
+    } else {
+      return "Dinheiro";
+    }
+  }
 
   return (
     <SuccessContainer>
@@ -46,13 +59,14 @@ function Success({
                   <span>
                     Entrega em{" "}
                     <strong>
-                      {rua || "Rua João Daniel Martinelli"}, {num || "102"}
-                      {comp}
+                      {address?.rua || "Rua João Daniel Martinelli"},{" "}
+                      {address?.num || "102"}
+                      {address?.comp}
                     </strong>
                   </span>
                   <span>
-                    {bairro || "Farrapos"} - {cidade || "Porto Alegre"},{" "}
-                    {uf || "RS"}
+                    {address?.bairro || "Farrapos"} -{" "}
+                    {address?.cidade || "Porto Alegre"}, {address?.uf || "RS"}
                   </span>
                 </div>
               </div>
@@ -80,7 +94,7 @@ function Success({
                 <div>
                   <span>Pagamento na entrega</span>
                   <strong>
-                    {selectedPaymentOption || "Cartão de crédito"}
+                    {paymentText(address?.selectedPaymentOption || "credito")}
                   </strong>
                 </div>
               </div>

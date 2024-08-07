@@ -151,41 +151,8 @@
       "image": "/src/assets/coffees/irish.png"
     }
   ],
-  "cart": [
-    {
-      "id": "5",
-      "title": "Latte",
-      "description": "Uma dose de café expresso com o dobro de leite e espuma cremosa",
-      "tags": [
-        "tradicional",
-        "com leite"
-      ],
-      "price": 9.9,
-      "image": "/src/assets/coffees/latte.png",
-      "quantity": 4
-    },
-    {
-      "id": "13",
-      "title": "Irlandês",
-      "description": "Bebida a base de café, uísque irlandês, açúcar e chantilly",
-      "tags": [
-        "especial",
-        "alcoólico"
-      ],
-      "price": 12.7,
-      "image": "/src/assets/coffees/irish.png",
-      "quantity": 2
-    },
-    {
-      "id": "1",
-      "title": "Expresso Americano",
-      "description": "Expresso diluído, menos intenso que o tradicional",
-      "tags": [
-        "tradicional"
-      ],
-      "price": 8.9,
-      "image": "/src/assets/coffees/americano.png",
-      "quantity": 2
-    }
+  "cart": [],
+  "orders": [
+   
   ]
 }

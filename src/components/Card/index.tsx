@@ -33,7 +33,6 @@ function Card({ coffee }: Props) {
           body: JSON.stringify(body),
         });
       } else {
-        // const index = json.findIndex((item: any) => item.id === coffee.id);
         await fetch(`http://localhost:3000/cart/${coffee.id}`, {
           method: "PATCH",
           body: JSON.stringify({
