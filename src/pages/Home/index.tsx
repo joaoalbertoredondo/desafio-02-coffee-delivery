@@ -8,23 +8,13 @@ import { CoffeeList, Heading, Hero, HomeContainer, Items } from "./styles";
 import Card, { CoffeeType } from "../../components/Card";
 import coffee from "../../assets/Coffee.png";
 import { useTheme } from "styled-components";
-import { useEffect, useState } from "react";
+import { useContext } from "react";
+import { CartContext } from "../../contexts/CartContext";
 
 function Home() {
+  const { coffees } = useContext(CartContext);
+
   const theme = useTheme();
-
-  const [coffees, setCoffees] = useState<CoffeeType[]>([]);
-
-  useEffect(() => {
-    loadCoffees();
-  }, []);
-
-  async function loadCoffees() {
-    const response = await fetch("http://localhost:3000/coffees");
-    const coffees = await response.json();
-
-    setCoffees(coffees);
-  }
 
   return (
     <HomeContainer>

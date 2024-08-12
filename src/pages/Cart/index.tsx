@@ -34,10 +34,12 @@ import * as zod from "zod";
 import { useNavigate } from "react-router-dom";
 import { CartContext } from "../../contexts/CartContext";
 
-export type newOrderFormData = zod.infer<typeof newOrderFormValidationSchema>;
+export type newOrderFormData = zod.infer<
+  typeof newOrderFormValidationSchema
+> & { selectedPaymentOption?: string };
 
 export type newOrder = {
-  address: newOrderFormData & { selectedPaymentOption: string };
+  address: newOrderFormData;
   items: CoffeeType[];
 };
 
@@ -55,6 +57,8 @@ const newOrderFormValidationSchema = zod.object({
 });
 
 function Cart() {
+  const { cart } = useContext(CartContext);
+
   const { register, handleSubmit, watch } = useForm<newOrderFormData>({
     resolver: zodResolver(newOrderFormValidationSchema),
   });
@@ -100,6 +104,8 @@ function Cart() {
       items: coffeesInCart,
     };
 
+    const orderResponse = await postNewOrder(order);
+
     async function postNewOrder(body: newOrder) {
       return fetch("http://localhost:3000/orders", {
         method: "POST",
@@ -113,14 +119,11 @@ function Cart() {
       });
     }
 
-    const orderResponse = await postNewOrder(order);
-
     const jsonOrder = await orderResponse.json();
 
     for (const coffee of coffeesInCart) {
       await cleanCart(coffee.id);
     }
-    console.log(coffeesInCart);
 
     await loadCoffeesInCart();
 
@@ -129,21 +132,14 @@ function Cart() {
     navigate(path);
   }
 
-  useEffect(() => {
-    loadCoffeesInCart();
-  }, []);
-
   const { refreshCart } = useContext(CartContext);
 
   async function loadCoffeesInCart() {
-    const response = await fetch("http://localhost:3000/cart");
-    const coffeesInCartFromJson = await response.json();
-
-    setCoffeesInCart(coffeesInCartFromJson);
+    setCoffeesInCart(cart);
 
     let total = 0;
 
-    coffeesInCartFromJson.map((item: CoffeeType) => {
+    cart.map((item: CoffeeType) => {
       total = total + item.price * (item.quantity || 1);
 
       setTotalItemsPrice(total);
@@ -151,6 +147,10 @@ function Cart() {
 
     refreshCart();
   }
+
+  useEffect(() => {
+    loadCoffeesInCart();
+  }, []);
 
   async function editCoffeeQuantity(newQuantity: number, id?: string) {
     await fetch(`http://localhost:3000/cart/${id}`, {

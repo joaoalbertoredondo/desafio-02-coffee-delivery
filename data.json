@@ -152,5 +152,65 @@
     }
   ],
   "cart": [],
-  "orders": []
+  "orders": [
+    {
+      "id": "e122",
+      "address": {
+        "rua": "qwe",
+        "num": 2,
+        "cidade": "jaca",
+        "bairro": "qwe",
+        "cep": "12.324-845",
+        "uf": "as",
+        "selectedPaymentOption": "credito"
+      },
+      "items": [
+        {
+          "id": "1",
+          "title": "Expresso Americano",
+          "description": "Expresso diluído, menos intenso que o tradicional",
+          "tags": [
+            "tradicional"
+          ],
+          "price": 8.9,
+          "image": "/src/assets/coffees/americano.png",
+          "quantity": 1
+        },
+        {
+          "id": "2",
+          "title": "Expresso Cremoso",
+          "description": "Café expresso tradicional com espuma cremosa",
+          "tags": [
+            "tradicional"
+          ],
+          "price": 12.9,
+          "image": "/src/assets/coffees/cremoso.png",
+          "quantity": 1
+        },
+        {
+          "id": "0",
+          "title": "Expresso Tradicional",
+          "description": "O tradicional café feito com água quente e grãos moídos",
+          "tags": [
+            "tradicional"
+          ],
+          "price": 9.9,
+          "image": "/src/assets/coffees/expresso.png",
+          "quantity": 2
+        },
+        {
+          "id": "5",
+          "title": "Latte",
+          "description": "Uma dose de café expresso com o dobro de leite e espuma cremosa",
+          "tags": [
+            "tradicional",
+            "com leite"
+          ],
+          "price": 9.9,
+          "image": "/src/assets/coffees/latte.png",
+          "quantity": 1
+        }
+      ]
+    }
+  ]
 }

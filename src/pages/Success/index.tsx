@@ -10,9 +10,7 @@ function Success() {
   const theme = useTheme();
 
   const [searchParams, _] = useSearchParams();
-  const [address, setAddress] = useState<
-    newOrderFormData & { selectedPaymentOption: string }
-  >();
+  const [address, setAddress] = useState<newOrderFormData>();
   const id = searchParams.get("id");
 
   async function loadAddress() {
